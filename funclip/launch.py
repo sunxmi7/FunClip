@@ -138,15 +138,17 @@ if __name__ == "__main__":
             output_dir = os.path.abspath(output_dir)
         if video_state is not None:
             clip_video_file, message, clip_srt = audio_clipper.video_clip(
-                dest_text, start_ost, end_ost, video_state, 
+                dest_text, start_ost, end_ost, video_state,
                 dest_spk=video_spk_input, output_dir=output_dir, timestamp_list=timestamp_list, add_sub=False)
             return clip_video_file, None, message, clip_srt
         if audio_state is not None:
             (sr, res_audio), message, clip_srt = audio_clipper.clip(
-                dest_text, start_ost, end_ost, audio_state, 
+                dest_text, start_ost, end_ost, audio_state,
                 dest_spk=video_spk_input, output_dir=output_dir, timestamp_list=timestamp_list, add_sub=False)
             return None, (sr, res_audio), message, clip_srt
-    
+        # 如果没有video_state和audio_state，返回默认值
+        return None, None, "错误：未识别到视频或音频数据，请先进行识别操作。", ""
+
     def AI_clip_subti(LLM_res, dest_text, video_spk_input, start_ost, end_ost, video_state, audio_state, output_dir):
         timestamp_list = extract_timestamps(LLM_res)
         output_dir = output_dir.strip()
@@ -156,14 +158,16 @@ if __name__ == "__main__":
             output_dir = os.path.abspath(output_dir)
         if video_state is not None:
             clip_video_file, message, clip_srt = audio_clipper.video_clip(
-                dest_text, start_ost, end_ost, video_state, 
+                dest_text, start_ost, end_ost, video_state,
                 dest_spk=video_spk_input, output_dir=output_dir, timestamp_list=timestamp_list, add_sub=True)
             return clip_video_file, None, message, clip_srt
         if audio_state is not None:
             (sr, res_audio), message, clip_srt = audio_clipper.clip(
-                dest_text, start_ost, end_ost, audio_state, 
+                dest_text, start_ost, end_ost, audio_state,
                 dest_spk=video_spk_input, output_dir=output_dir, timestamp_list=timestamp_list, add_sub=True)
             return None, (sr, res_audio), message, clip_srt
+        # 如果没有video_state和audio_state，返回默认值
+        return None, None, "错误：未识别到视频或音频数据，请先进行识别操作。", ""
     
     # gradio interface
     theme = gr.Theme.load("funclip/utils/theme.json")
@@ -211,13 +215,14 @@ if __name__ == "__main__":
                             with gr.Row():
                                 llm_model = gr.Dropdown(
                                     choices=[
-                                        "deepseek-chat"
+                                        "deepseek-chat",
                                         "qwen-plus",
-                                             "gpt-3.5-turbo", 
-                                             "gpt-3.5-turbo-0125", 
-                                             "gpt-4-turbo",
-                                             "g4f-gpt-3.5-turbo"], 
-                                    value="deepseek-chat",
+                                        "gpt-3.5-turbo",
+                                        "gpt-3.5-turbo-0125",
+                                        "gpt-4-turbo",
+                                        "g4f-gpt-3.5-turbo"
+                                    ],
+                                    value="qwen-plus",
                                     label="LLM Model Name",
                                     allow_custom_value=True)
                                 apikey_input = gr.Textbox(label="APIKEY")

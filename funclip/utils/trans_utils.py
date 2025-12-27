@@ -111,16 +111,17 @@ def convert_time_to_millis(time_str):
     return (hours * 3600 + minutes * 60 + seconds) * 1000 + milliseconds
 
 def extract_timestamps(input_text):
-    # 使用正则表达式查找所有时间戳
-    timestamps = re.findall(r'\[(\d{2}:\d{2}:\d{2},\d{2,3})\s*-\s*(\d{2}:\d{2}:\d{2},\d{2,3})\]', input_text)
+    # 使用正则表达式查找所有时间戳，支持短横线(-)和箭头(-->)
+    timestamps = re.findall(r'\[(\d{2}:\d{2}:\d{2},\d{2,3})\s*[-–→]*\s*(\d{2}:\d{2}:\d{2},\d{2,3})\]', input_text)
     times_list = []
-    print(timestamps)
+    print("提取到的时间戳:", timestamps)
     # 循环遍历找到的所有时间戳，并转换为毫秒
     for start_time, end_time in timestamps:
         start_millis = convert_time_to_millis(start_time)
         end_millis = convert_time_to_millis(end_time)
         times_list.append([start_millis, end_millis])
-    
+
+    print("转换为毫秒的时间戳:", times_list)
     return times_list
 
 
